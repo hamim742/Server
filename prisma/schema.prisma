@@ -1,0 +1,123 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+
+}
+
+
+model User{
+  id Int @id @default(autoincrement())
+  name String
+  profession Profession @default(full_stack_developer)
+  email String @unique
+  phone String?
+  role Role @default(USER)
+  password String
+  picture String?
+   bio String?
+   address String?
+  skills String[]
+  experience String?
+  website String?
+  githubUrl String?
+  linkedInUrl String?
+  facebookUrl String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  projects Project[]
+  blogs Blog[]
+}
+
+
+model Project{
+  id Int @id @default(autoincrement())
+  userId Int
+  user User @relation(fields: [userId], references: [id])
+  title String
+  thumbnail String
+  description String
+  features String
+  category Category
+  githubUrl String?
+  liveUrl String?
+  status ProjectStatus
+  technologies String[]
+  startDate String
+  endDate String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Blog {
+  id          Int   @id @default(autoincrement())
+  title       String
+  slug        String   @unique
+  thumbnail   String
+  description String?
+  content     String
+  category    BlogCategory @default(Web_Development)
+  tags        String[]
+  status      BlogStatus @default(published)
+  views       Int      @default(0)
+  userId      Int
+  user        User @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum BlogStatus {
+  published
+  draft
+}
+
+enum Profession{
+   digital_marketer
+  full_stack_developer
+  front_end_developer
+  back_end_developer
+  mobile_developer
+  ui_ux_designer
+  product_designer
+  data_analyst
+  data_engineer
+}
+
+enum BlogCategory {
+  Technology
+  Web_Development
+  Programming
+  Lifestyle
+  Travel
+  Photography
+  Food
+  Education
+  Business
+  Other
+}
+
+enum ProjectStatus{
+completed
+in_progress
+planned
+}
+
+enum Category{
+  web
+  api
+  mobile
+  other
+}
+enum Role{
+  USER
+  ADMIN
+}
